@@ -1,0 +1,39 @@
+#MYC-E2F ODEs
+
+#Initializing parameters
+
+par S=0.01
+par kMC=1,kS=0.05,kEFm=0.4,kb=0.15,kEFp=0.4
+par kCD=0.03,kCDS=0.45,kCE=0.35
+par kRB=0.18,kRE=180,kRBDP=3.6,kRBP1=18,kRBP2=18
+par kAFb=0.007,kAFEF=0.015,kAFMC=0.01,kMREF=0.8,kMRMC=0.2
+par K_AFMC=1.0,K_AFEF=0.50,K_MRMC=0.25,K_MREF=0.25,K_MCCD=0.15
+par K_MC=0.15, K_MC1=2.5, K_S=0.5, K_EF=0.15,K_CD=0.92,K_CE=0.92
+par K_R=10000,K_RP=0.01,K_AFR=0.01,K_MR=0.6
+par rMC=0.7,rEFm=0.2,rEFp=0.2,rCD=1.5,rCE=1.5,rAF=0.12,rMR=2.8
+par rRB=0.06,rRP=0.06,rRE=0.03
+
+#ODEs to model
+
+c3=kRBP1*CD*RE/(K_CD+RE)+kRBP2*CE*RE/(K_CE+RE)
+c2=kb*MC/(K_MC1+MC)
+c1=kEFm*(MC/(K_MC+MC))*(EFp/(K_EF+EFp))
+c4=(1+K_AFR*AF)*rEFp*EFp
+c5=kRBP1*CD*RB/(K_CD+RB)+kRBP2*CE*RB/(K_CE+RB)
+
+dMC/dt=10^(kMC)*S/(K_S+S)-rMC*MC
+dEFm/dt=(kS*S/(K_S+S)+c1+c2)*(K_R/(K_R+MC))-rEFm*EFm
+dEFp/dt=kEFp*EFm*(K_MR/(K_MR+MR))+c3-kRE*RB*EFp-c4
+dCD/dt=kCD*MC/(K_MCCD+MC)+kCDS*S/(K_S+S)-rCD*CD
+dCE/dt=kCE*EFp/(K_EF+EFp)-rCE*CE
+dRB/dt=kRB+kRBDP*RP/(K_RP+RP)-kRE*RB*EFp-c5-rRB*RB
+dRP/dt=c5+c3-kRBDP*RP/(K_RP+RP)-rRP*RP
+dRE/dt=kRE*RB*EFp-c3-rRE*RE
+dAF/dt=kAFb+kAFMC*MC/(K_AFMC+MC)+kAFEF*EFp/(K_AFEF+EFp)-rAF*AF
+dMR/dt=(kMRMC*MC)/(K_MRMC+MC)+kMREF*EFp/(K_MREF+EFp)-rMR*MR
+
+@ xp=MC,yp=EFp
+
+@ meth=qualrk,tol=1e-6,total=500,dt=0.01
+
+done
